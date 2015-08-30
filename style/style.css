@@ -1,16 +1,21 @@
-body {
+body
+{
   background-color: #000000;
   color: #FFFFFF;
-
-}
-
-p {
-  text-align: center;
   
+  text-align: center;
+  font-family: "Arial", sans-serif;
+
 }
 
-.image {
-  margin-top: 20px;
-  margin-bottom: 20px;
+h1
+{
+  margin-top: 10px;
+  margin-bottom: 50px;
+}
 
+video
+{
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
