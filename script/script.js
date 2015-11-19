@@ -21,7 +21,7 @@ var shuffledDances = [];
 window.onload = function()
 {
 
-  if(detectWebmCompatibility())
+  if(detectVideoCompatibility())
   {
   
     var detectJavascript = document.getElementById('dance_failure');
@@ -41,15 +41,15 @@ window.onload = function()
     var noWebmSupportHeader = document.getElementById('header');
     
     if(header)
-      header.innerHTML = 'This browser doesn\'t support webm video playback.';
+      header.innerHTML = 'This browser doesn\'t seem to support video playback.';
   }
 }
 
-function detectWebmCompatibility()
+function detectVideoCompatibility()
 {
   var testVideo = document.createElement('video');
 
-  return !!testVideo.canPlayType('video/webm');
+  return testVideo.canPlayType('video/webm') || testVideo.canPlayType('video/mp4');
 }
 
 function createPageElements()
@@ -91,7 +91,11 @@ function loadVideo()
   danceVideo.pause();
   
   header.innerHTML = 'Zogon is dancing ' + randomDance[1];
-  danceVideo.src = 'video/' + randomDance[0] + '.webm';
+  
+  if(danceVideo.canPlayType('video/webm'))
+    danceVideo.src = 'video/' + randomDance[0] + '.webm';
+  else
+    danceVideo.src = 'video/' + randomDance[0] + '.mp4';
   
   danceVideo.play();
 }
