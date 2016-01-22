@@ -169,6 +169,7 @@ function createVideo(danceArray)
     danceVideo.id = danceArray[i][0] + '_video';
     danceVideo.width = 960;
     danceVideo.loop = true;
+    danceVideo.preload = 'auto';
     danceVideo.hidden = true;
     
     if(danceVideo.canPlayType('video/webm'))
