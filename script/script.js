@@ -31,11 +31,18 @@ var dungeonDances = [
 var festiveDances = [
                       ['Starlight','Zogon is dancing during the Starlight Celebration!']
                     ];
+                    
+var specialDances = [
+                      ['Tonberry_Stab','ZOGON, WATCH OUT!!!']
+                    ];
              
 var trialCount = {index:0};
 var friendCount = {index:0};
 var dungeonCount = {index:0};
 var festiveCount = {index:0};
+var specialCount = {index:0};
+
+var totalButtonClicks = 0;
 
 window.onload = function()
 {
@@ -87,11 +94,13 @@ function createPageElements()
   createVideo(friendDances);
   createVideo(dungeonDances);
   createVideo(festiveDances);
+  createVideo(specialDances);
   
   shuffle(trialDances);
   shuffle(friendDances);
   shuffle(dungeonDances);
   shuffle(festiveDances);
+  shuffle(specialDances);
   
   var trialButton = document.createElement('button');
   trialButton.innerHTML = 'Dance in a Trial!';
@@ -113,12 +122,20 @@ function createPageElements()
   festiveButton.onclick = function(){loadVideo(festiveDances, festiveCount);};
   festiveButton.hidden = true;
   
+  var specialButton = document.createElement('button');
+  specialButton.id = 'special';
+  specialButton.innerHTML = 'Dance somewhere dangerous...';
+  specialButton.onclick = function(){loadVideo(specialDances, specialCount);};
+  specialButton.hidden = true;
+  
   container.appendChild(header);
   container.appendChild(document.createElement('div'));
   container.appendChild(trialButton);
   container.appendChild(dungeonButton);
   container.appendChild(friendButton);
   container.appendChild(festiveButton);
+  container.appendChild(document.createElement('p'));
+  container.appendChild(specialButton);
   
   videoSetup();
 }
@@ -134,9 +151,12 @@ function videoSetup()
   var loaded = numberOfLoadedVideos(trialDances) +
                numberOfLoadedVideos(friendDances) +
                numberOfLoadedVideos(dungeonDances) +
-               numberOfLoadedVideos(festiveDances);
+               numberOfLoadedVideos(festiveDances) +
+               numberOfLoadedVideos(specialDances);
                
-  var total = trialDances.length + friendDances.length + dungeonDances.length + festiveDances.length;
+  var total = trialDances.length + friendDances.length +
+              dungeonDances.length + festiveDances.length +
+              specialDances.length;
   
   if(loaded == total)
   {
@@ -144,7 +164,8 @@ function videoSetup()
     header.innerHTML = 'Where is Zogon dancing?';
     var buttons = document.getElementsByTagName('button');
     
-    for(var i = 0; i < buttons.length; i++)
+    // Unhide all butttons but the special button
+    for(var i = 0; i < buttons.length - 1; i++)
       buttons[i].hidden = false;
   }
   else
@@ -168,9 +189,13 @@ function createVideo(danceArray)
     var danceVideo = document.createElement('video');
     danceVideo.id = danceArray[i][0] + '_video';
     danceVideo.width = 960;
-    danceVideo.loop = true;
     danceVideo.preload = 'auto';
     danceVideo.hidden = true;
+    
+    if(danceArray[i][0] != 'Tonberry_Stab')
+      danceVideo.loop = true;
+    else
+      danceVideo.onended = function() { enableButtons(); };
     
     if(danceVideo.canPlayType('video/webm'))
       danceVideo.src = 'video/' + danceArray[i][0] + '.webm';
@@ -203,10 +228,7 @@ function numberOfLoadedVideos(danceArray)
 function loadVideo(danceArray, count)
 {
 
-  var buttons = document.getElementsByTagName('button');
-    
-  for(var i = 0; i < buttons.length; i++)
-    buttons[i].disabled = true;
+  disableButtons();
 
   var currentTime = 0;
   var currentVid = danceArray[0][2];
@@ -246,8 +268,10 @@ function loadVideo(danceArray, count)
   
   setTimeout(function()
   {
-    for(var i = 0; i < buttons.length; i++)
-      buttons[i].disabled = false;
+    if(danceVideo.id != 'Tonberry_Stab_video')
+    {
+      enableButtons();
+    }
   
     currentVid.hidden = true;
     
@@ -256,8 +280,34 @@ function loadVideo(danceArray, count)
       
     danceVideo.hidden = false;
     
+    totalButtonClicks++;
+    console.log(totalButtonClicks);
+    
+    if(totalButtonClicks == 10)
+    {
+      var specialButton = document.getElementById('special');
+      specialButton.hidden = false;
+    }
+    
+    
   }, 200);
   
+}
+
+function enableButtons()
+{
+  var buttons = document.getElementsByTagName('button');
+  
+  for(var i = 0; i < buttons.length; i++)
+    buttons[i].disabled = false;
+}
+
+function disableButtons()
+{
+  var buttons = document.getElementsByTagName('button');
+  
+  for(var i = 0; i < buttons.length; i++)
+    buttons[i].disabled = true;
 }
 
 // Fisher-Yates Shuffle

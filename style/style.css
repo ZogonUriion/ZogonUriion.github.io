@@ -35,3 +35,8 @@ a:visited
 {
   color: gray;
 }
+
+#special
+{
+  background-color: #FF8080;
+}
